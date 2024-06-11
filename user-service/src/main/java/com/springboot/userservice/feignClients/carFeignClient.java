@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(name = "car-service",url = ("http://localhost:8081"))
+@FeignClient(name = "car-service")
 
 public interface carFeignClient {
 

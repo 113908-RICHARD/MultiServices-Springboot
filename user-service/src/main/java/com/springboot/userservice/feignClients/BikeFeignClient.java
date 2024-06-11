@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(name = "bike-service",url = "http://localhost:8082")
+@FeignClient(name = "bike-service")
 public interface BikeFeignClient {
 
     @PostMapping("/bikes")

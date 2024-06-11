@@ -1,5 +1,6 @@
 package com.springboot.carservice.services;
 
+import com.springboot.carservice.commands.UserResponse;
 import com.springboot.carservice.models.Car;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +14,6 @@ public interface CarService {
     List<Car> getAllCars();
     Car createCar(Car car);
     List<Car> getCarsByUserId(UUID userId) ;
+
 
 }

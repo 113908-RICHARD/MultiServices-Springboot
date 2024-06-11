@@ -1,9 +1,12 @@
 package com.springboot.carservice.services.imp;
 
+import com.springboot.carservice.commands.UserResponse;
 import com.springboot.carservice.entities.CarEntity;
+import com.springboot.carservice.feignClients.UserFeignClient;
 import com.springboot.carservice.models.Car;
 import com.springboot.carservice.repositories.CarRepository;
 import com.springboot.carservice.services.CarService;
+import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,10 @@ public class CarServiceImp implements CarService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private UserFeignClient userFeignClient;
+
 
 
     @Override
@@ -53,16 +60,25 @@ public class CarServiceImp implements CarService {
 
     @Override
     public List<Car> getCarsByUserId(UUID userId) {
-        Optional<List<CarEntity>> carEntity = carRepository.findByUserId(userId);
-        List<Car> carsModels = new ArrayList<>();
-        if (carEntity.isPresent()) {
-            for (CarEntity carEntity1 : carEntity.get()) {
-                carsModels.add(modelMapper.map(carEntity1, Car.class));
+        try {
+            UserResponse userResponse = userFeignClient.getUserById(userId);
+
+            Optional<List<CarEntity>> carEntity = carRepository.findByUserId(userId);
+            List<Car> carsModels = new ArrayList<>();
+            if (carEntity.isPresent()) {
+                for (CarEntity carEntity1 : carEntity.get()) {
+                    carsModels.add(modelMapper.map(carEntity1, Car.class));
+                }
+                return carsModels;
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cars not found");
             }
-            return carsModels;
-        }else{
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cars not found");
+        } catch (FeignException.NotFound ex) {
+            // Handle case where Feign client returns 404 Not Found
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         }
     }
+
+
 
 }

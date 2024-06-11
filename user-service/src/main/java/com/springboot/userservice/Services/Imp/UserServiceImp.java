@@ -117,7 +117,7 @@ public class UserServiceImp implements UserService {
     public List<Car> getCars(UUID userId){
         Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
         if (userEntityOptional.isPresent()) {
-            return restTemplate.getForObject("http://localhost:8081/cars/user/"+userId, List.class);
+            return restTemplate.getForObject("http://car-service/cars/user/"+userId, List.class);
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There isnt a client with that id");
         }
@@ -129,7 +129,7 @@ public class UserServiceImp implements UserService {
 
         Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
         if (userEntityOptional.isPresent()) {
-            return restTemplate.getForObject("http://localhost:8082/bikes/user/"+userId, List.class);
+            return restTemplate.getForObject("http://bike-service/bikes/user/"+userId, List.class);
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There isnt a client with that id");
         }
