@@ -49,4 +49,4 @@ spring:
             client-id: springboot-client
             client-secret: mk59z5llJdpqtUjzI1qsxtM8g5Fr8V8p
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/auth2/code/springboot-client"
+            redirect-uri: "http://localhost:8080/login/auth2/code/springboot-client"
