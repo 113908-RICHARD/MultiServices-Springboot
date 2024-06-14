@@ -44,7 +44,7 @@ spring:
             user-name-attribute:  preferred_username
             token-uri:  http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/token
         registration:
-          client-name:
+          springboot-client:
             provider: keycloak
             client-id: springboot-client
             client-secret: mk59z5llJdpqtUjzI1qsxtM8g5Fr8V8p
