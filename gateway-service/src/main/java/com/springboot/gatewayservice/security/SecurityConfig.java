@@ -16,17 +16,15 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 public class SecurityConfig {
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity){
-        serverHttpSecurity
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity) {
+        return serverHttpSecurity
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .authorizeExchange(exchange-> exchange
-                        .pathMatchers("/eureka/**")
-                        .permitAll()
-                        .anyExchange()
-                        .authenticated())
-                .oauth2Login(Customizer.withDefaults());
-
-        return serverHttpSecurity.build();
-
+                .authorizeExchange(exchange -> exchange
+                        .anyExchange().authenticated())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(new KeycloakPrincipalJwtConvertor ())))
+                .build();
     }
+
 }
+

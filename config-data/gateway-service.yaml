@@ -47,6 +47,6 @@ spring:
           springboot-client:
             provider: keycloak
             client-id: springboot-client
-            client-secret: 6aeUazDD8sUggRSGjsR1hbd8cXwYHpOt
+            client-secret: Y0QDNRFCTqgpFmAIeDDM0G98F1qchsom
             authorization-grant-type: authorization_code
             redirect-uri: "http://localhost:8080/login/auth2/code/springboot-client"
