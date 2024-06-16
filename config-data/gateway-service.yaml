@@ -13,40 +13,28 @@ eureka:
 spring:
   cloud:
     gateway:
-      default-filters:
-        - TokenRelay
       discovery:
         locator:
           enabled: true
-      routes:
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/users/**
-          filters:
-            - RemoveRequestHeader=Cookie
-        - id: car-service
-          uri: lb://car-service
-          predicates:
-            - Path=/cars/**
-        - id: bike-service
-          uri: lb://bike-service
-          predicates:
-            - Path=/bikes/**
+    routes:
+      - id: user-service
+        uri: lb://user-service
+        predicates:
+          - Path=/users/**
+      - id: car-service
+        uri: lb://car-service
+        predicates:
+          - Path=/cars/**
+      - id: bike-service
+        uri: lb://bike-service
+        predicates:
+          - Path=/bikes/**
+
+
+
 
   security:
     oauth2:
-      client:
-        provider:
-          keycloak:
-            authorization-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/auth
-            userinfo-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/userinfo
-            user-name-attribute:  preferred_username
-            token-uri:  http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/token
-        registration:
-          springboot-client:
-            provider: keycloak
-            client-id: springboot-client
-            client-secret: Y0QDNRFCTqgpFmAIeDDM0G98F1qchsom
-            authorization-grant-type: authorization_code
-            redirect-uri: "http://localhost:8080/login/auth2/code/springboot-client"
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8085/realms/SPRINGBOOT

@@ -14,8 +14,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.Collections;
 
-@Data
-@AllArgsConstructor
+
 
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class KeycloakAuthenitactionToken extends AbstractAuthenticationToken {
