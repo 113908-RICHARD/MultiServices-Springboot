@@ -21,6 +21,8 @@ spring:
         uri: lb://user-service
         predicates:
           - Path=/users/**
+        filters:
+          TokenRelay=
       - id: car-service
         uri: lb://car-service
         predicates:
@@ -35,6 +37,15 @@ spring:
 
   security:
     oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8085/realms/SPRINGBOOT
+      client:
+        registration:
+          gateway:
+            provider: my-provider
+            client-id: springboot-client
+            client-secret: Y0QDNRFCTqgpFmAIeDDM0G98F1qchsom
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://localhost:8080/login/oauth2/code/springboot-client"
+            scope: openid
+        provider:
+          my-provider:
+            issuer-uri: http://localhost:8085/realms/SPRINGBOOT
