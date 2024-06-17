@@ -16,21 +16,21 @@ spring:
       discovery:
         locator:
           enabled: true
-    routes:
-      - id: user-service
-        uri: lb://user-service
-        predicates:
-          - Path=/users/**
-        filters:
-          TokenRelay=
-      - id: car-service
-        uri: lb://car-service
-        predicates:
-          - Path=/cars/**
-      - id: bike-service
-        uri: lb://bike-service
-        predicates:
-          - Path=/bikes/**
+      routes:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/users/**
+          filters:
+            TokenRelay=
+        - id: car-service
+          uri: lb://car-service
+          predicates:
+            - Path=/cars/**
+        - id: bike-service
+          uri: lb://bike-service
+          predicates:
+            - Path=/bikes/**
 
 
 
