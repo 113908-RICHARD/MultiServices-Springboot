@@ -35,17 +35,4 @@ spring:
 
 
 
-  security:
-    oauth2:
-      client:
-        registration:
-          gateway:
-            provider: my-provider
-            client-id: springboot-client
-            client-secret: Y0QDNRFCTqgpFmAIeDDM0G98F1qchsom
-            authorization-grant-type: authorization_code
-            redirect-uri: "http://localhost:8080/login/oauth2/code/springboot-client"
-            scope: openid
-        provider:
-          my-provider:
-            issuer-uri: http://localhost:8085/realms/SPRINGBOOT
+
