@@ -39,15 +39,15 @@ spring:
     oauth2:
       client:
         registration:
-          gateway:
-            provider: my-provider
+          keycloak: # Use a consistent name here
+            provider: keycloak # Match the provider name here
             client-id: springboot-client
             client-secret: E4joOHOP6pJiOMOto3t9iI8C9yFWCi83
             authorization-grant-type: authorization_code
-            redirect-uri: "http://localhost:8080/login/oauth2/code/springboot-client"
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak" # Use consistent naming
             scope: openid
         provider:
-          my-provider:
+          keycloak: # Ensure this matches the registration provider
             issuer-uri: http://localhost:8085/realms/SPRINGBOOT
             authorization-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/auth
             token-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/token
