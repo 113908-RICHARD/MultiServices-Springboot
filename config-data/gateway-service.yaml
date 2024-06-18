@@ -35,17 +35,21 @@ spring:
 
 
 
+
   security:
     oauth2:
       client:
         registration:
-          gateway:
-            provider: my-provider
+          keycloak:
             client-id: springboot-client
             client-secret: E4joOHOP6pJiOMOto3t9iI8C9yFWCi83
             authorization-grant-type: authorization_code
-            redirect-uri: "http://localhost:8080/login/oauth2/code/springboot-client"
-            scope: openid
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+            scope: openid, profile, email
         provider:
-          my-provider:
+          keycloak:
             issuer-uri: http://localhost:8085/realms/SPRINGBOOT
+            authorization-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/auth
+            token-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/token
+            user-info-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/userinfo
+            jwk-set-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/certs
