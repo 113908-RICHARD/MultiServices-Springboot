@@ -44,7 +44,7 @@ spring:
             client-id: springboot-client
             client-secret: 6aeUazDD8sUggRSGjsR1hbd8cXwYHpOt
             authorization-grant-type: authorization_code
-            redirect-uri: "http://localhost:8085/login/oauth2/code/springboot-client"
+            redirect-uri: "http://localhost:8080/login/oauth2/code/springboot-client"
             scope: openid
         provider:
           my-provider:
