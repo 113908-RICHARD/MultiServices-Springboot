@@ -49,3 +49,7 @@ spring:
         provider:
           my-provider:
             issuer-uri: http://localhost:8085/realms/SPRINGBOOT
+            authorization-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/auth
+            token-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/token
+            user-info-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/userinfo
+            jwk-set-uri: http://localhost:8085/realms/SPRINGBOOT/protocol/openid-connect/certs
