@@ -5,7 +5,7 @@ spring:
     config:
       server:
         git:
-          default-label: main
+          default-label: auth_service
           uri: https://github.com/113908-RICHARD/MultiServices-Springboot
           search-paths: config-data
   application:
