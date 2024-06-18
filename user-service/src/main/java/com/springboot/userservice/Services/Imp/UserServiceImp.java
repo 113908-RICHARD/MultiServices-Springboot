@@ -12,7 +12,9 @@ import com.springboot.userservice.feignClients.BikeFeignClient;
 import com.springboot.userservice.feignClients.carFeignClient;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -114,10 +116,15 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<Car> getCars(UUID userId){
+    public List getCars(UUID userId){
+
         Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
         if (userEntityOptional.isPresent()) {
-            return restTemplate.getForObject("http://car-service/cars/user/"+userId, List.class);
+            Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "Bearer " + jwt.getTokenValue());
+            ResponseEntity<List> cars = restTemplate .exchange("http://car-service/cars/user/"+userId, HttpMethod.GET,new  HttpEntity<>(headers), List.class);
+            return cars.getBody();
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There isnt a client with that id");
         }
@@ -129,7 +136,11 @@ public class UserServiceImp implements UserService {
 
         Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
         if (userEntityOptional.isPresent()) {
-            return restTemplate.getForObject("http://bike-service/bikes/user/"+userId, List.class);
+            Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "Bearer " + jwt.getTokenValue());
+            ResponseEntity<List> bikes = restTemplate .exchange("http://bike-service/bikes/user/"+userId, HttpMethod.GET,new  HttpEntity<>(headers), List.class);
+            return bikes.getBody();
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There isnt a client with that id");
         }

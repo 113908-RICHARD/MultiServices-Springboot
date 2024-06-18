@@ -20,9 +20,10 @@ public class SecurityConfig {
         http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec
-                        .pathMatchers("/public/**").permitAll()
+
                         .anyExchange().authenticated())
                 .oauth2Login(withDefaults());
+
         return http.build();
     }
 }
