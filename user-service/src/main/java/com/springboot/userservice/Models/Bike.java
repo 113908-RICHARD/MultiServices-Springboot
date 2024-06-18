@@ -12,10 +12,10 @@ import java.util.UUID;
 public class Bike {
 
 
-    private UUID id;
-    private String brand;
-    private String model;
-    private String userId;
+    public UUID id;
+    public String brand;
+    public String model;
+    public UUID userId;
 
 
 }

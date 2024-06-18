@@ -120,11 +120,8 @@ public class UserServiceImp implements UserService {
 
         Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
         if (userEntityOptional.isPresent()) {
-            Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", "Bearer " + jwt.getTokenValue());
-            ResponseEntity<List> cars = restTemplate .exchange("http://car-service/cars/user/"+userId, HttpMethod.GET,new  HttpEntity<>(headers), List.class);
-            return cars.getBody();
+            return restTemplate.getForObject("http://localhost:8080/cars/user/"+userId, List.class);
+
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There isnt a client with that id");
         }
@@ -136,11 +133,9 @@ public class UserServiceImp implements UserService {
 
         Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
         if (userEntityOptional.isPresent()) {
-            Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", "Bearer " + jwt.getTokenValue());
-            ResponseEntity<List> bikes = restTemplate .exchange("http://bike-service/bikes/user/"+userId, HttpMethod.GET,new  HttpEntity<>(headers), List.class);
-            return bikes.getBody();
+
+
+            return bikeFeignClient.findBikesByUserId(userId);
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There isnt a client with that id");
         }
