@@ -10,6 +10,7 @@ import com.springboot.userservice.Repositories.UserRepository;
 import com.springboot.userservice.Services.UserService;
 import com.springboot.userservice.feignClients.BikeFeignClient;
 import com.springboot.userservice.feignClients.carFeignClient;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -144,13 +145,32 @@ public class UserServiceImp implements UserService {
 
 
     @Override
+    @Transactional
     public Car saveCar(Car car) {
-        return carFeignClient.saveCar(car);
+
+        Optional<UserEntity> userEntityOptional = userRepository.findById(car.getUserId());
+        Car carToSave;
+
+        if (userEntityOptional.isPresent()) {
+            carToSave = carFeignClient.saveCar(car);
+        }else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There isnt a client with that id");
+        }
+        return carToSave;
     }
 
     @Override
+    @Transactional
     public Bike saveBike(Bike bike){
-        return bikeFeignClient.saveBike(bike);
+        Optional<UserEntity> userEntityOptional = userRepository.findById(bike.getUserId());
+        Bike bikeToSave;
+        if (userEntityOptional.isPresent()) {
+            bikeToSave = bikeFeignClient.saveBike(bike);
+
+        }else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There isnt a client with that id");
+        }
+        return  bikeToSave;
     }
 
     @Override

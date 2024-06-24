@@ -13,5 +13,5 @@ public class Car {
     private UUID id;
     private String brand;
     private String model;
-    private String userId;
+    private UUID userId;
 }
