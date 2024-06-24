@@ -13,6 +13,8 @@ eureka:
 spring:
   cloud:
     gateway:
+      default-filters:
+        - TokenRelay
       discovery:
         locator:
           enabled: true
@@ -22,7 +24,8 @@ spring:
           predicates:
             - Path=/users/**
           filters:
-            TokenRelay=
+            - RemoveRequestHeader=Cookie
+
         - id: car-service
           uri: lb://car-service
           predicates:
