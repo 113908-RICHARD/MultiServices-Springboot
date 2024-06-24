@@ -39,10 +39,10 @@ public class AuthUserService {
 
     public TokenCommand login(AuthUserCommand command){
         Optional<AuthUser> user = authUserRepository.findByUsername(command.getUsername());
-        if (!user.isPresent()){
+        if (user.isEmpty()){
             return null;
         }
-        if (passwordEncoder.matches(command.getPassword(),command.getPassword()))
+        if (passwordEncoder.matches(command.getPassword(),user.get().getPassword()))
             return new TokenCommand(jwtProvider.createToken(user.get()));
         return null;
     }
