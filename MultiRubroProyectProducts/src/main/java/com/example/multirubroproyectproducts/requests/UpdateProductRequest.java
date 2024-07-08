@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -12,5 +13,9 @@ import java.util.UUID;
 public class UpdateProductRequest {
 
     UUID id;
-    Integer stock;
+    String description;
+    Double price;
+
+    List<UUID> categories;
+    List<UUID> providers;
 }

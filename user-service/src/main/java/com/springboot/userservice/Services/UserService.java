@@ -31,5 +31,6 @@ public interface UserService {
     Car saveCar(Car car);
     Bike saveBike(Bike bike);
     Map<String, Object> findVehiclesByUserId(UUID id);
+    Boolean createKeyCloakUser(UserRequest userRequest);
 
 }

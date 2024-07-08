@@ -15,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Setter
 @Getter
+@Builder
 public class ProductEntity extends BaseEntity{
 
     static final String TABLE_NAME = "PRODUCTS";

@@ -3,12 +3,13 @@ package com.example.multirubroproyectproducts.responses;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 @Data
 @Setter
 @Getter
 public class GenericResponse<T> {
-    private String status;
+    private HttpStatus status;
     private String message;
     private T data;
 }

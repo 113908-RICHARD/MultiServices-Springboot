@@ -1,5 +1,6 @@
 package com.springboot.userservice.Commands.Request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Data
@@ -9,6 +10,13 @@ import lombok.*;
 @AllArgsConstructor
 public class UserRequest {
 
-    private String name;
+    @JsonProperty("user-name")
+    private String username;
+    @JsonProperty("first-name")
+    private String firstName;
+    @JsonProperty("last-name")
+    private String lastName;
+
+    private String password;
     private String email;
 }

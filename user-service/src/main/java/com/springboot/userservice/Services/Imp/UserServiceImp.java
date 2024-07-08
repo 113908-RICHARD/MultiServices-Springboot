@@ -7,9 +7,12 @@ import com.springboot.userservice.Entities.UserEntity;
 import com.springboot.userservice.Models.Bike;
 import com.springboot.userservice.Models.Car;
 import com.springboot.userservice.Repositories.UserRepository;
+import com.springboot.userservice.Services.EmailService;
+import com.springboot.userservice.Services.KeyCloakService;
 import com.springboot.userservice.Services.UserService;
 import com.springboot.userservice.feignClients.BikeFeignClient;
 import com.springboot.userservice.feignClients.carFeignClient;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -38,6 +41,12 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     private BikeFeignClient bikeFeignClient;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private KeyCloakService keyCloakService;
 
 
 
@@ -77,30 +86,43 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserResponse updateUser(UpdateUserRequest UpdateUserRequest) {
-        Optional<UserEntity> userEntityOptional = userRepository.findById(UpdateUserRequest.getId());
-        if (userEntityOptional.isPresent()) {
-            UserEntity userEntity = userEntityOptional.get();
-            userEntity.setName(UpdateUserRequest.getName());
-            userEntity.setEmail(UpdateUserRequest.getEmail());
-            userEntity.setUpdatedDate(new Date());
-            userRepository.save(userEntity);
-        }else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There isnt a client with that id");
-        }
-        return modelMapper.map(userEntityOptional.get(), UserResponse.class);
+//        Optional<UserEntity> userEntityOptional = userRepository.findById(UpdateUserRequest.getId());
+//        if (userEntityOptional.isPresent()) {
+//            UserEntity userEntity = userEntityOptional.get();
+//            userEntity.setFirstName(UpdateUserRequest.get());
+//            userEntity.setEmail(UpdateUserRequest.getEmail());
+//            userEntity.setUpdatedDate(new Date());
+//            userRepository.save(userEntity);
+//        }else {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"There isnt a client with that id");
+//        }
+//        return modelMapper.map(userEntityOptional.get(), UserResponse.class);
+        return null ;
     }
 
     @Override
+    @Transactional
     public UserResponse createUser(UserRequest userRequest) {
        UserEntity userEntity = new UserEntity();
-       userEntity.setName(userRequest.getName());
+       userEntity.setFirstName(userRequest.getFirstName());
+       userEntity.setLastName(userRequest.getLastName());
+       userEntity.setUserName(userRequest.getUsername());
+       userEntity.setPassword(userRequest.getPassword());
        userEntity.setEmail(userRequest.getEmail());
        userEntity.setUpdatedDate(new Date());
        userEntity.setCreationDate(new Date());
+       userEntity.setValid(true);
+       userEntity.setValidMail(false);
        userRepository.save(userEntity);
+
+       if (!createKeyCloakUser(userRequest))
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"error while creating keycloak user");
+
        return modelMapper.map(userEntity, UserResponse.class);
 
     }
+
+
 
     @Override
     public UserResponse deleteUser(UUID id) {
@@ -183,7 +205,10 @@ public class UserServiceImp implements UserService {
         return result;
     }
 
-
+    @Override
+    public Boolean createKeyCloakUser(UserRequest userRequest) {
+        return keyCloakService.createUser(userRequest);
+    }
 
 
 }

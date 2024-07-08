@@ -12,6 +12,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,20 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+
+
+    @GetMapping("/helloUser")
+    @PreAuthorize("hasRole('client_user')")
+    public String helloUser(){
+        return "hello user";
+    }
+    @GetMapping("/helloAdmin")
+    @PreAuthorize("hasRole('client_admin')")
+    public String helloAdmin(){
+        return "hello admin";
+    }
+
 
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
