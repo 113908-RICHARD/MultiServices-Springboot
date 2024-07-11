@@ -5,6 +5,7 @@ import com.example.multirubroproyectproducts.entities.ProductEntity;
 import com.example.multirubroproyectproducts.entities.ProviderEntity;
 import com.example.multirubroproyectproducts.models.Category;
 import com.example.multirubroproyectproducts.models.Product;
+import com.example.multirubroproyectproducts.models.Provider;
 import com.example.multirubroproyectproducts.repositories.CategoryRepository;
 import com.example.multirubroproyectproducts.repositories.ProductRepository;
 import com.example.multirubroproyectproducts.repositories.ProviderRepository;
@@ -14,6 +15,7 @@ import com.example.multirubroproyectproducts.requests.UpdateProductStockRequest;
 import com.example.multirubroproyectproducts.responses.GenericResponse;
 import com.example.multirubroproyectproducts.services.ICategoryService;
 import com.example.multirubroproyectproducts.services.IProductService;
+import com.example.multirubroproyectproducts.services.IProviderService;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.internal.bytebuddy.implementation.auxiliary.AuxiliaryType;
@@ -22,10 +24,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import javax.swing.text.html.Option;
+import java.util.*;
 
 @Service
 public class ProductService implements IProductService {
@@ -42,6 +42,9 @@ public class ProductService implements IProductService {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private IProviderService providerService;
+
     @Override
     public GenericResponse<List<Product>> getAllProducts() {
         GenericResponse<List<Product>> response = new GenericResponse<>();
@@ -54,6 +57,7 @@ public class ProductService implements IProductService {
         }
         response.setStatus(HttpStatus.OK);
         response.setMessage("Found " + productsEntities.size() + " products");
+
 
         List<Product> productsList = new ArrayList<>();
         for (ProductEntity productEntity : productsEntities) {
@@ -82,14 +86,15 @@ public class ProductService implements IProductService {
         GenericResponse<Product> response = new GenericResponse<>();
 
         List<ProviderEntity> providerEntities = getProviderEntities(product.getProviders());
-        List<CategoryEntity> categoryEntities = getCategoryEntities(product.getCategories());
 
-        ProductEntity productEntity = getProductEntity(product, providerEntities, categoryEntities);
+
+        ProductEntity productEntity = getProductEntity(product, providerEntities);
+
         try {
-            productRepository.save(productEntity);
+           ProductEntity productSaved = productRepository.save(productEntity);
             response.setStatus(HttpStatus.CREATED);
             response.setMessage("Product created");
-            response.setData(modelMapper.map(productEntity, Product.class));
+            response.setData(modelMapper.map(productSaved, Product.class));
         }catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
         }
@@ -102,6 +107,7 @@ public class ProductService implements IProductService {
         for (UUID providerId : providerIds) {
             providerEntities.add(providerRepository.findById(providerId).get());
         }
+
         return providerEntities;
     }
 
@@ -112,13 +118,13 @@ public class ProductService implements IProductService {
         }
         return categoryEntities;
     }
-    protected ProductEntity getProductEntity(ProductRequest productRequest, List<ProviderEntity> providerEntities,List<CategoryEntity> categories) {
+    protected ProductEntity getProductEntity(ProductRequest productRequest, List<ProviderEntity> providerEntities) {
         ProductEntity productEntity = new ProductEntity();
         productEntity.setDescription(productRequest.getDescription());
         productEntity.setPrice(productRequest.getPrice());
         productEntity.setStock(productRequest.getStock());
-        productEntity.setProviders(providerEntities);
-        productEntity.setCategories(categories);
+
+
         return  productEntity;
     }
 
@@ -134,7 +140,21 @@ public class ProductService implements IProductService {
 
     @Override
     public GenericResponse<List<Product>> getProductsByProvider(UUID id) {
-        return null;
+        GenericResponse<List<Product>> response = new GenericResponse<>();
+
+        Optional<ProviderEntity> provider = providerRepository.findById(id);
+        if (provider.isPresent()) {
+            response.setStatus(HttpStatus.OK);
+            response.setMessage("found "+ provider.get().getProducts().size() + " products");
+            response.setData(Collections.singletonList(modelMapper.map(provider.get().getProducts(), Product.class)));
+        }else{
+            response.setStatus(HttpStatus.NOT_FOUND);
+            response.setMessage("No provider found with id " + id);
+
+        }
+        return response;
+
+
     }
 
     @Override

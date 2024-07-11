@@ -19,6 +19,6 @@ public class Product {
         String description;
         Double price;
         Integer stock;
-        List<Category> categories;
+
         List<Provider> providers;
 }

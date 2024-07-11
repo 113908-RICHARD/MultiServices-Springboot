@@ -3,6 +3,7 @@ package com.example.multirubroproyectproducts.models;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -17,4 +18,5 @@ public class Provider {
     String name;
     String address;
     String cellphone;
+    List<Product> products;
 }

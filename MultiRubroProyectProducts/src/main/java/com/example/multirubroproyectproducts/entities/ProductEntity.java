@@ -10,7 +10,6 @@ import java.util.UUID;
 @Entity
 @Table(name = ProductEntity.TABLE_NAME)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -27,11 +26,8 @@ public class ProductEntity extends BaseEntity{
     @Column(name = "PRICE")
     Double price;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    List<CategoryEntity> categories;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    List<ProviderEntity> providers;
+
 
     @Column(name = "STOCK")
     Integer stock;

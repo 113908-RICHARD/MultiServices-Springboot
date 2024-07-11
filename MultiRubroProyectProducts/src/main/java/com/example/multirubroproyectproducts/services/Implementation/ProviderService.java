@@ -1,7 +1,9 @@
 package com.example.multirubroproyectproducts.services.Implementation;
 
+import com.example.multirubroproyectproducts.entities.ProductEntity;
 import com.example.multirubroproyectproducts.entities.ProviderEntity;
 import com.example.multirubroproyectproducts.models.Provider;
+import com.example.multirubroproyectproducts.repositories.ProductRepository;
 import com.example.multirubroproyectproducts.repositories.ProviderRepository;
 import com.example.multirubroproyectproducts.requests.ProviderRequest;
 import com.example.multirubroproyectproducts.requests.UpdateProviderRequest;
@@ -28,7 +30,7 @@ public class ProviderService implements IProviderService {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private RestClientAutoConfiguration restClientAutoConfiguration;
+    private ProductRepository productRepository;
 
     @Override
     public GenericResponse<List<Provider>> getAllProviders() {
@@ -71,6 +73,7 @@ public class ProviderService implements IProviderService {
     public GenericResponse<Provider> createProvider(ProviderRequest provider) {
         GenericResponse<Provider> response = new GenericResponse<>();
         ProviderEntity providerEntity = modelMapper.map(provider, ProviderEntity.class);
+        providerEntity.setProducts(new ArrayList<>());
         try {
             providerRepository.save(providerEntity);
             response.setStatus(HttpStatus.CREATED);
@@ -94,6 +97,7 @@ public class ProviderService implements IProviderService {
         providerEntityToUpdate.setName(request.getName());
         providerEntityToUpdate.setAddress(request.getAddress());
         providerEntityToUpdate.setCellphone(request.getCellphone());
+        providerEntityToUpdate.setProducts(getProducts(request.getProducts()));
         try {
             providerRepository.save(providerEntityToUpdate);
             response.setStatus(HttpStatus.OK);
@@ -103,5 +107,14 @@ public class ProviderService implements IProviderService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"Error updating provider");
         }
         return response;
+    }
+
+    private List<ProductEntity> getProducts(List<UUID> productIds) {
+        List<ProductEntity> products = new ArrayList<>();
+        for (UUID productId : productIds) {
+            ProductEntity productEntity = productRepository.findById(productId).get();
+            products.add(productEntity);
+        }
+        return products;
     }
 }

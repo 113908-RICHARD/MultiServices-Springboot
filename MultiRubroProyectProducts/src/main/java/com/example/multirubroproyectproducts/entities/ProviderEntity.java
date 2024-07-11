@@ -5,16 +5,17 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.naming.Name;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = ProviderEntity.TABLE_NAME)
+@Table(name = ProductEntity.TABLE_NAME)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
+@Builder
 public class ProviderEntity extends BaseEntity{
     static final String TABLE_NAME = "PROVIDERS";
 
@@ -29,7 +30,11 @@ public class ProviderEntity extends BaseEntity{
     @Column(name = "CELLPHONE")
     String cellphone;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    ProductEntity product;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "provider_product",
+            joinColumns = @JoinColumn(name = "provider_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    List<ProductEntity> products;
 }

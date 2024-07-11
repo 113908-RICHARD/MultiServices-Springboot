@@ -15,7 +15,7 @@ public class ProductRequest {
     String description;
     Double price;
     Integer stock;
-    List<UUID> categories;
+
     List<UUID> providers;
 
 }
