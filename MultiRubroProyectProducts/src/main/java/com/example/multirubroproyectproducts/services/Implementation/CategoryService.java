@@ -1,10 +1,14 @@
 package com.example.multirubroproyectproducts.services.Implementation;
 
+import com.example.multirubroproyectproducts.configs.GenericResponseConfig;
 import com.example.multirubroproyectproducts.entities.CategoryEntity;
+import com.example.multirubroproyectproducts.entities.ProductEntity;
 import com.example.multirubroproyectproducts.models.Category;
 import com.example.multirubroproyectproducts.repositories.CategoryRepository;
-import com.example.multirubroproyectproducts.requests.CategoryRequest;
-import com.example.multirubroproyectproducts.requests.UpdateCategoryRequest;
+import com.example.multirubroproyectproducts.repositories.ProductRepository;
+import com.example.multirubroproyectproducts.requests.Categories.CategoryRequest;
+import com.example.multirubroproyectproducts.requests.Categories.UpdateCategoryRequest;
+import com.example.multirubroproyectproducts.requests.Products.UpdateProductCategoriesRequest;
 import com.example.multirubroproyectproducts.responses.GenericResponse;
 import com.example.multirubroproyectproducts.services.ICategoryService;
 import jakarta.transaction.Transactional;
@@ -27,82 +31,104 @@ public class CategoryService  implements ICategoryService {
 
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private GenericResponseConfig genericResponse;
 
 
     @Override
     @Transactional
     public GenericResponse<Category> createCategory(CategoryRequest request) {
-        GenericResponse<Category> response = new GenericResponse<>();
+
         List<CategoryEntity> categories = categoryRepository.findAll();
-        for(CategoryEntity category : categories){
-            if(category.getDescription().equals(request.getDescription())){
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Description already exists");
+        for (CategoryEntity category : categories) {
+            if (category.getDescription().equals(request.getDescription())) {
+                return genericResponse.createResponse(HttpStatus.CONFLICT, "Description already exists", null);
             }
         }
         try {
             CategoryEntity categoryEntity = categoryRepository.save(modelMapper.map(request, CategoryEntity.class));
-            response.setStatus(HttpStatus.CREATED);
-            response.setMessage("Category created successfully");
-            response.setData(modelMapper.map(categoryEntity, Category.class));
-        }catch (Exception e){
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-            response.setMessage(e.getMessage());
+            return genericResponse.createResponse(HttpStatus.OK, "Category created successfully", modelMapper.map(categoryEntity, Category.class));
+        } catch (Exception e) {
+            return genericResponse.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null);
 
         }
-        return response;
+
     }
 
     @Override
     @Transactional
     public GenericResponse<Category> updateCategory(UpdateCategoryRequest request) {
-        GenericResponse<Category> response = new GenericResponse<>();
+
         Optional<CategoryEntity> categoryEntity = categoryRepository.findById(request.getId());
-        if (categoryEntity.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
-        }else{
-          CategoryEntity category = categoryEntity.get();
-          category.setDescription(request.getDescription());
-          categoryRepository.save(category);
-          response.setStatus(HttpStatus.OK);
-          response.setMessage("Category updated");
-          response.setData(modelMapper.map(category, Category.class));
+        if (categoryEntity.isEmpty())
+           return genericResponse.createResponse(HttpStatus.NOT_FOUND, "Category not found", null);
+        try {
+            CategoryEntity category = categoryEntity.get();
+            category.setDescription(request.getDescription());
+            categoryRepository.save(category);
+            return genericResponse.createResponse(HttpStatus.OK, "Category updated successfully", modelMapper.map(category, Category.class));
+        } catch (Exception e) {
+            return genericResponse.createResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), null);
         }
-        return response;
+
 
     }
 
     @Override
     public GenericResponse<List<Category>> getCategories() {
-        GenericResponse<List<Category>> response = new GenericResponse<>();
+
         List<CategoryEntity> categoryEntities = categoryRepository.findAll();
         if (categoryEntities.isEmpty()){
-            response.setStatus(HttpStatus.NOT_FOUND);
-            response.setMessage("No categories found");
-            return response;
+           return genericResponse.createResponse(HttpStatus.NOT_FOUND, "No categories found", null);
         }
-        response.setStatus(HttpStatus.OK);
-        response.setMessage(categoryEntities.size() + " categories found");
-
         List<Category> categories = new ArrayList<>();
         for (CategoryEntity categoryEntity : categoryEntities){
             categories.add(modelMapper.map(categoryEntity, Category.class));
         }
-        response.setData(categories);
-        return response;
+        return genericResponse.createResponse(HttpStatus.OK,categoryEntities.size() + "Categories found", categories);
     }
 
     @Override
     public GenericResponse<Category> getCategoryById(UUID uuid) {
-        GenericResponse<Category> response = new GenericResponse<>();
+
        Optional<CategoryEntity> categoryEntity = categoryRepository.findById(uuid);
        if (categoryEntity.isPresent()){
-           response.setStatus(HttpStatus.OK);
-           response.setMessage("Category found");
-           response.setData(modelMapper.map(categoryEntity.get(), Category.class));
+           return genericResponse.createResponse(HttpStatus.OK,"Category found", modelMapper.map(categoryEntity.get(), Category.class));
        }else {
-           response.setStatus(HttpStatus.NOT_FOUND);
-           response.setMessage("Category not found");
+
+           return genericResponse.createResponse(HttpStatus.NOT_FOUND, "Category not found", null);
        }
-        return response;
+
+    }
+
+    @Override
+    public GenericResponse<String> updateCategoryProduct(UpdateProductCategoriesRequest request) {
+
+        Optional<CategoryEntity> categoryEntity = categoryRepository.findById(request.getCategoryId());
+        if (categoryEntity.isPresent()){
+            CategoryEntity category = categoryEntity.get();
+
+            category.getProducts().addAll(getProductEntity(request.getProducts()));
+            try {
+                categoryRepository.save(category);
+                return genericResponse.createResponse(HttpStatus.OK, "Category updated successfully", "SUCCESS");
+            }catch (Exception e){
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+            }
+
+        }else {
+            return genericResponse.createResponse(HttpStatus.NOT_FOUND,"Category not found", "ERROR");
+        }
+
+    }
+    protected List<ProductEntity> getProductEntity(List<UUID> productIds) {
+        List<ProductEntity> productEntities = new ArrayList<>();
+        for (UUID productId : productIds) {
+            productEntities.add(productRepository.findById(productId).get());
+        }
+        return productEntities;
     }
 }

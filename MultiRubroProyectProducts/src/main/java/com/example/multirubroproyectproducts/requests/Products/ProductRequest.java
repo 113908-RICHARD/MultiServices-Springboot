@@ -1,11 +1,8 @@
-package com.example.multirubroproyectproducts.requests;
+package com.example.multirubroproyectproducts.requests.Products;
 
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
-import java.util.UUID;
 
 @Setter
 @Getter
@@ -16,6 +13,5 @@ public class ProductRequest {
     Double price;
     Integer stock;
 
-    List<UUID> providers;
 
 }

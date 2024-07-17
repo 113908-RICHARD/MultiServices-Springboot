@@ -1,6 +1,8 @@
 package com.example.multirubroproyectproducts.entities;
 
+
 import jakarta.persistence.*;
+import jdk.jfr.Name;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,6 +17,15 @@ import java.util.UUID;
 @Setter
 @Getter
 @Builder
+@NamedEntityGraph(
+        name = "ProductEntity.withoutProviders",
+        attributeNodes = {
+                @NamedAttributeNode("description"),
+                @NamedAttributeNode("price"),
+                @NamedAttributeNode("categories"),
+                @NamedAttributeNode("stock")
+        }
+)
 public class ProductEntity extends BaseEntity{
 
     static final String TABLE_NAME = "PRODUCTS";
@@ -27,7 +38,11 @@ public class ProductEntity extends BaseEntity{
     Double price;
 
 
+    @ManyToMany(mappedBy = "products",fetch = FetchType.LAZY)
+    List<CategoryEntity> categories;
 
+    @ManyToMany(mappedBy = "products",fetch = FetchType.LAZY)
+    List<ProviderEntity> providers;
 
     @Column(name = "STOCK")
     Integer stock;

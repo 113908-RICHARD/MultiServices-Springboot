@@ -1,4 +1,4 @@
-package com.example.multirubroproyectproducts.requests;
+package com.example.multirubroproyectproducts.requests.Categories;
 
 import lombok.Data;
 import lombok.Getter;

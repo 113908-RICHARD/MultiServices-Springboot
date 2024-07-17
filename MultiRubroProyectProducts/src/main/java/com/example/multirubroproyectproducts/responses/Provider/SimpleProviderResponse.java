@@ -1,19 +1,18 @@
-package com.example.multirubroproyectproducts.requests;
+package com.example.multirubroproyectproducts.responses.Provider;
+
 
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.UUID;
 
+@Data
 @Setter
 @Getter
-@Data
-public class UpdateProviderRequest {
+public class SimpleProviderResponse {
     UUID id;
     String name;
     String address;
     String cellphone;
-    List<UUID> products;
 }

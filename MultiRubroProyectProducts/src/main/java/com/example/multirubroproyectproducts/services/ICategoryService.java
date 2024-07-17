@@ -1,8 +1,9 @@
 package com.example.multirubroproyectproducts.services;
 
 import com.example.multirubroproyectproducts.models.Category;
-import com.example.multirubroproyectproducts.requests.CategoryRequest;
-import com.example.multirubroproyectproducts.requests.UpdateCategoryRequest;
+import com.example.multirubroproyectproducts.requests.Categories.CategoryRequest;
+import com.example.multirubroproyectproducts.requests.Categories.UpdateCategoryRequest;
+import com.example.multirubroproyectproducts.requests.Products.UpdateProductCategoriesRequest;
 import com.example.multirubroproyectproducts.responses.GenericResponse;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,6 @@ public interface ICategoryService {
 
     GenericResponse<List<Category>> getCategories();
     GenericResponse<Category> getCategoryById(UUID uuid);
+    GenericResponse<String> updateCategoryProduct(UpdateProductCategoriesRequest request);
+
 }

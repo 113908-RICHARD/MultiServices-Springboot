@@ -1,4 +1,4 @@
-package com.example.multirubroproyectproducts.requests;
+package com.example.multirubroproyectproducts.requests.Products;
 
 import lombok.Data;
 import lombok.Getter;
@@ -16,6 +16,4 @@ public class UpdateProductRequest {
     String description;
     Double price;
 
-    List<UUID> categories;
-    List<UUID> providers;
 }

@@ -1,4 +1,4 @@
-package com.example.multirubroproyectproducts.requests;
+package com.example.multirubroproyectproducts.requests.Products;
 
 import lombok.Data;
 import lombok.Getter;
@@ -13,4 +13,5 @@ public class UpdateProductStockRequest {
 
     UUID id;
     Integer stock;
+    Boolean subtract;
 }

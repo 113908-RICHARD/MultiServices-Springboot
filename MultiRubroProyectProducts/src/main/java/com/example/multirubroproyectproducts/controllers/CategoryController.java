@@ -1,11 +1,11 @@
 package com.example.multirubroproyectproducts.controllers;
 
 import com.example.multirubroproyectproducts.models.Category;
-import com.example.multirubroproyectproducts.requests.CategoryRequest;
-import com.example.multirubroproyectproducts.requests.UpdateCategoryRequest;
+import com.example.multirubroproyectproducts.requests.Categories.CategoryRequest;
+import com.example.multirubroproyectproducts.requests.Categories.UpdateCategoryRequest;
+import com.example.multirubroproyectproducts.requests.Products.UpdateProductCategoriesRequest;
 import com.example.multirubroproyectproducts.responses.GenericResponse;
 import com.example.multirubroproyectproducts.services.ICategoryService;
-import com.example.multirubroproyectproducts.services.Implementation.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,5 +34,9 @@ public class CategoryController {
     @PutMapping
     public ResponseEntity<GenericResponse<Category>> updateCategory(@RequestBody UpdateCategoryRequest category) {
         return ResponseEntity.ok(categoryService.updateCategory(category));
+    }
+    @PutMapping("/update-product-category")
+    public ResponseEntity<GenericResponse<String>> updateCategoryProduct(@RequestBody UpdateProductCategoriesRequest request){
+        return ResponseEntity.ok(categoryService.updateCategoryProduct(request));
     }
 }

@@ -1,4 +1,4 @@
-package com.example.multirubroproyectproducts.requests;
+package com.example.multirubroproyectproducts.requests.Providers;
 
 import lombok.Data;
 import lombok.Getter;
@@ -10,8 +10,8 @@ import java.util.UUID;
 @Setter
 @Getter
 @Data
-public class ProviderRequest {
-
+public class UpdateProviderRequest {
+    UUID id;
     String name;
     String address;
     String cellphone;
